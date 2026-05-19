@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+//////////////////////////////////////////////
+
+enum FinanceType {
+  INCOME
+  OUTCOME
+}
+
+enum RecurrenceFrequency {
+  DAY
+  WEEK
+  MONTH
+}
+
+//////////////////////////////////////////////
+
+model Finance {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  type        FinanceType
+  amount      Float
+  startAt     DateTime
+
+  recurring   Boolean   @default(false)
+  recurrence  RecurrenceRule
+}
+
+model RecurrenceRule {
+  id              Int       @id @default(autoincrement())
+  financeId       Int       @unique
+  finance         Finance   @relation(fields: [financeId], references: [id], onDelete: Cascade)
+
+  frequency   RecurrenceFrequency
+  interval    Int       @default(1) // every N units
+  weekdays    Json?                 // [1, 2, 3, 4, 5, 6, 7] for Monday through Sunday
+  endsAt      DateTime?
+}
