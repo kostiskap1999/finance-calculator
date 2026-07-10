@@ -31,7 +31,7 @@ model Finance {
   startAt     DateTime
 
   recurring   Boolean   @default(false)
-  recurrence  RecurrenceRule
+  recurrence  RecurrenceRule?
 }
 
 model RecurrenceRule {

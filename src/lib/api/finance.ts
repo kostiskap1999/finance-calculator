@@ -1,4 +1,4 @@
-import { FinanceType } from '@prisma/client'
+import { FinanceType, Prisma } from '@prisma/client'
 
 export async function getFinancesByType(type: FinanceType) {
   const query = `?type=${type}`
@@ -9,11 +9,11 @@ export async function getFinancesByType(type: FinanceType) {
   return response.json();
 }
 
-export async function createTask(finance: Prisma.FinanceCreateInput): Promise<Prisma.FinanceGetPayload<{ include: { recurrence: true } }>> {
+export async function createFinance(finance: Prisma.FinanceCreateInput): Promise<Prisma.FinanceGetPayload<{ include: { recurrence: true } }>> {
   const response = await fetch('/api/finance', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(task),
+    body: JSON.stringify(finance),
   })
   if (!response.ok)
     throw new Error('Failed to create finance')
