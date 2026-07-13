@@ -10,6 +10,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isNewFinanceOpen, setIsNewFinanceOpen] = useState(false)
+  const [refresh, setRefresh] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,11 @@ export default function Home() {
     fetchData()
   }, [])
   
+  const handleRefresh = () => {
+    setRefresh((prev) => prev + 1)
+  }
+
+
   return (
     <PageWrapper loading={loading} error={error} className="flex flex-col h-screen">
       <div className="h-1/4 bg-red-200 flex items-center justify-between px-6">
@@ -39,14 +45,14 @@ export default function Home() {
       </div>
       <div className="h-3/4 flex flex-row items-center justify-center">
         <div className="w-2/4 h-full flex items-center justify-center">
-          <Incomes />
+          <Incomes refresh={refresh} handleRefresh={handleRefresh} />
         </div>
         <div className="w-2/4 h-full flex items-center justify-center">
-          <Outcomes />
+          <Outcomes refresh={refresh} handleRefresh={handleRefresh} />
         </div>
       </div>
 
-      <NewFinance isOpen={isNewFinanceOpen} onClose={() => setIsNewFinanceOpen(false)} />
+      <NewFinance isOpen={isNewFinanceOpen} onClose={() => setIsNewFinanceOpen(false)} handleRefresh={handleRefresh} />
     </PageWrapper>
   )
 }

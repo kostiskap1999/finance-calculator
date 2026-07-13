@@ -9,7 +9,7 @@ interface NewFinanceProps {
   onClose: () => void
 }
 
-export default function NewFinance({ isOpen, onClose }: NewFinanceProps) {
+export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanceProps & { handleRefresh: () => void }) {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
@@ -18,7 +18,7 @@ export default function NewFinance({ isOpen, onClose }: NewFinanceProps) {
     description: '',
     type: FinanceType.INCOME,
     amount: 0,
-    startAt: new Date().toISOString().slice(0, 10)
+    startAt: new Date().toISOString()
   }
   const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(defaultFinance)
 
@@ -33,6 +33,7 @@ export default function NewFinance({ isOpen, onClose }: NewFinanceProps) {
     try {
       await createFinance(newFinance)
       setNewFinance({ ...defaultFinance })
+      handleRefresh()
       onClose()
     } catch {
       setFeedback('Unable to save this finance right now.')

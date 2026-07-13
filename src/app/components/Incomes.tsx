@@ -1,30 +1,45 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import PageWrapper from './PageWrapper'
-import { getFinancesByType, createFinance } from '@/lib/api/finance'
+import { getFinancesByType } from '@/lib/api/finance'
+import { FinanceType } from '@prisma/client'
 
-export default function Incomes() {
+export default function Incomes({refresh, handleRefresh}: {refresh: number; handleRefresh: () => void}) {
   const [incomes, setIncomes] = useState<any[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-        const inc = await getFinancesByType('INCOME')
-        setIncomes(inc)
-        console.log(inc)
+      try {
+        const inc = await getFinancesByType(FinanceType.INCOME)
+        setIncomes(Array.isArray(inc) ? inc : [])
+      } catch (error) {
+        console.error('Failed to load incomes', error)
+        setIncomes([])
+      }
     }
+
     fetchData()
-  }, [])
-  
-
-    const handleAddIncome = async (newIncome: Prisma.IncomeCreateInput) => {
-        await createFinance(newIncome)
-    }
-
+  }, [refresh])
 
   return (
-    <div className="bg-green-200 w-full h-full flex items-center justify-center">
-        Incomes
+    <div className="bg-green-200 w-full h-full p-6 overflow-auto">
+      <h2 className="mb-4 text-xl font-semibold">Incomes</h2>
+
+      {incomes.length === 0 ? (
+        <div className="rounded-lg bg-white/80 p-4 text-sm text-gray-700">No incomes yet.</div>
+      ) : (
+        <div className="space-y-3">
+          {incomes.map((income) => (
+            <div key={income.id} className="rounded-lg bg-white p-4 shadow-sm">
+              <div className="font-medium text-gray-800">{income.title}</div>
+              <div className="text-sm text-gray-600">{income.description || 'No description'}</div>
+              <div className="mt-1 text-sm text-gray-600">
+                Amount: {Number(income.amount).toFixed(2)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
