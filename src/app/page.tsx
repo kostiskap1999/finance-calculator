@@ -6,11 +6,24 @@ import Incomes from './components/Incomes'
 import Outcomes from './components/Outcomes'
 import NewFinance from './components/NewFinance'
 
+export interface NewFinanceProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+
 export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isNewFinanceOpen, setIsNewFinanceOpen] = useState(false)
   const [refresh, setRefresh] = useState(0)
+
+
+  const financeModal = {
+  isOpen: isNewFinanceOpen,
+  onClose: () => setIsNewFinanceOpen(false),
+};
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,14 +58,14 @@ export default function Home() {
       </div>
       <div className="h-3/4 flex flex-row items-center justify-center">
         <div className="w-2/4 h-full flex items-center justify-center">
-          <Incomes refresh={refresh} handleRefresh={handleRefresh} />
+          <Incomes financeModal={financeModal} refresh={refresh} onRefresh={handleRefresh} />
         </div>
         <div className="w-2/4 h-full flex items-center justify-center">
-          <Outcomes refresh={refresh} handleRefresh={handleRefresh} />
+          <Outcomes financeModal={financeModal} refresh={refresh} onRefresh={handleRefresh} />
         </div>
       </div>
 
-      <NewFinance isOpen={isNewFinanceOpen} onClose={() => setIsNewFinanceOpen(false)} handleRefresh={handleRefresh} />
+      <NewFinance financeModal={financeModal} handleRefresh={handleRefresh} />
     </PageWrapper>
   )
 }

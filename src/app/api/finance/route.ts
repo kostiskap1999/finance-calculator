@@ -25,3 +25,30 @@ export async function POST(req: NextRequest) {
 
   return Response.json(newFinance)
 }
+
+export async function PUT(req: NextRequest) {
+  const { id, ...data } = await req.json()
+
+  if (!id) {
+    return Response.json({ error: 'Finance id is required' }, { status: 400 })
+  }
+
+  const updatedFinance = await prisma.finance.update({
+    where: { id: Number(id) },
+    data,
+  })
+
+  return Response.json(updatedFinance)
+}
+
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json()
+
+  if (!id) {
+    return Response.json({ error: 'Finance id is required' }, { status: 400 })
+  }
+
+  await prisma.finance.delete({ where: { id: Number(id) } })
+
+  return Response.json({ success: true })
+}

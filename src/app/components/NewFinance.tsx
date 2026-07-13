@@ -3,13 +3,11 @@
 import { useState, type FormEvent } from 'react'
 import { FinanceType, Prisma } from '@prisma/client'
 import { createFinance } from '@/lib/api/finance'
+import { NewFinanceProps } from '../page';
 
-interface NewFinanceProps {
-  isOpen: boolean
-  onClose: () => void
-}
 
-export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanceProps & { handleRefresh: () => void }) {
+
+export default function NewFinance({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: Prisma.FinanceCreateInput }) {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
@@ -20,9 +18,9 @@ export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanc
     amount: 0,
     startAt: new Date().toISOString()
   }
-  const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(defaultFinance)
+  const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(newFinanceProp || defaultFinance)
 
-  if (!isOpen)
+  if (!financeModal.isOpen)
     return null
 
   const handleSubmit = async (event: FormEvent) => {
@@ -34,7 +32,7 @@ export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanc
       await createFinance(newFinance)
       setNewFinance({ ...defaultFinance })
       handleRefresh()
-      onClose()
+      financeModal.onClose()
     } catch {
       setFeedback('Unable to save this finance right now.')
     } finally {
@@ -45,7 +43,7 @@ export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanc
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-      onClick={onClose}
+      onClick={financeModal.onClose}
     >
       <div
         className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
@@ -55,7 +53,7 @@ export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanc
           <h2 className="text-xl font-semibold text-gray-800">Add finance</h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={financeModal.onClose}
             className="text-2xl text-gray-500 hover:text-gray-700"
             aria-label="Close"
           >
@@ -127,7 +125,7 @@ export default function NewFinance({ isOpen, onClose, handleRefresh }: NewFinanc
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={financeModal.onClose}
               className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700"
             >
               Cancel
