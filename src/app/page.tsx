@@ -5,6 +5,7 @@ import PageWrapper from './components/PageWrapper'
 import Incomes from './components/Incomes'
 import Outcomes from './components/Outcomes'
 import NewFinance from './components/NewFinance'
+import TotalFinances from './components/TotalFinances'
 
 export interface NewFinanceProps {
   isOpen: boolean
@@ -46,7 +47,7 @@ export default function Home() {
   return (
     <PageWrapper loading={loading} error={error} className="flex flex-col h-screen">
       <div className="h-1/4 bg-red-200 flex items-center justify-between px-6">
-        <div className="text-xl font-semibold">Total Finances</div>
+        <TotalFinances financeModal={financeModal} refresh={refresh} onRefresh={handleRefresh} />
         <button
           type="button"
           onClick={() => setIsNewFinanceOpen(true)}

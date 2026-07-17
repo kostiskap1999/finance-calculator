@@ -1,4 +1,5 @@
 import { FinanceType, Prisma } from '@prisma/client'
+import { prisma } from '../prisma';
 
 export async function getFinancesByType(type: FinanceType) {
   const query = `?type=${type}`
@@ -8,6 +9,25 @@ export async function getFinancesByType(type: FinanceType) {
     throw new Error('Failed to fetch finances')
   return response.json();
 }
+
+export async function getTotalFinances() {
+
+  let response = await fetch(`/api/finance/totals?type=INCOME`)
+  if (!response.ok)
+    throw new Error('Failed to fetch incomes')
+  const incomes = await response.json()
+
+  response = await fetch(`/api/finance/totals?type=OUTCOME`)
+  if (!response.ok)
+    throw new Error('Failed to fetch outcomes')
+  const outcomes = await response.json()
+
+  const total = incomes.total - outcomes.total
+
+  return total
+}
+
+
 
 export async function createFinance(finance: Prisma.FinanceCreateInput): Promise<Prisma.FinanceGetPayload<{ include: { recurrence: true } }>> {
   const response = await fetch('/api/finance', {
