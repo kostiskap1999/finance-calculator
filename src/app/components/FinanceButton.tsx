@@ -13,6 +13,7 @@ interface FinanceButtonProps {
 
 export default function FinanceButton({ financeModal, finance, onFinanceChange }: FinanceButtonProps & { financeModal: NewFinanceProps }) {
   const [isEditing, setIsEditing] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
@@ -61,8 +62,11 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
   }
 
   const handleDelete = async () => {
-    if (!window.confirm('Delete this finance entry?'))
-      return
+    setConfirmDelete(true)
+  }
+
+
+  const handleConfirmDelete = async () => {
 
     setIsSubmitting(true)
     setFeedback(null)
@@ -77,34 +81,51 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
     }
   }
 
+
   return (
     <>
-      <div className="rounded-xl border border-(--border) bg-(--surface-elevated) p-4 shadow-sm">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="font-medium text-foreground">{finance.title}</div>
-            <div className="text-sm text-(--muted)">{finance.description || 'No description'}</div>
-            <div className="mt-1 text-sm text-(--muted)">
-              Amount: {Number(finance.amount).toFixed(2)}
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={openEditor}
-              className="rounded bg-(--accent) px-2 py-1 text-xs font-semibold text-white transition hover:bg-(--accent-strong)"
-            >
-              Edit
-            </button>
+      <div 
+        className="group relative rounded-xl border border-(--border) bg-(--surface-elevated) p-4 shadow-sm transition hover:border-(--accent)"
+        onMouseLeave={() => setConfirmDelete(false)}
+      >
+        <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <button
+            type="button"
+            onClick={openEditor}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent) text-sm font-semibold text-white transition hover:bg-(--accent-strong)"
+            aria-label="Edit finance"
+          >
+            ✎
+          </button>
+          {!confirmDelete &&
             <button
               type="button"
               onClick={handleDelete}
               disabled={isSubmitting}
-              className="rounded bg-(--accent-strong) px-2 py-1 text-xs font-semibold text-white transition hover:bg-(--accent-glow) disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-strong) text-sm font-semibold text-white transition hover:bg-(--accent-glow) disabled:cursor-not-allowed disabled:opacity-70"
+              aria-label="Delete finance"
             >
-              Delete
+              ×
             </button>
+          }
+          {confirmDelete &&
+            <button
+              type="button"
+              onClick={handleConfirmDelete}
+              disabled={isSubmitting}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-strong) text-sm font-semibold text-white transition hover:bg-(--accent-glow) disabled:cursor-not-allowed disabled:opacity-70"
+              aria-label="Delete finance"
+            >
+              🗑️
+            </button>
+          }
+        </div>
+
+        <div className="pr-12">
+          <div className="font-medium text-foreground">{finance.title}</div>
+          <div className="text-sm text-(--muted)">{finance.description || 'No description'}</div>
+          <div className="mt-1 text-sm text-(--muted)">
+            Amount: {Number(finance.amount).toFixed(2)}
           </div>
         </div>
 

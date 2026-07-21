@@ -5,20 +5,27 @@ import { FinanceType, Prisma } from '@prisma/client'
 import { createFinance } from '@/lib/api/finance'
 import { NewFinanceProps } from '../page';
 
+type FinanceForm = Omit<Prisma.FinanceCreateInput, "type" | "amount"> & {
+  type: FinanceType | undefined;
+  amount: number | undefined;
+};
 
 
-export default function NewFinance({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: Prisma.FinanceCreateInput }) {
+
+export default function NewFinance({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: FinanceForm }) {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
-  const defaultFinance: Prisma.FinanceCreateInput = {
+  
+  const defaultFinance: FinanceForm = {
     title: '',
     description: '',
-    type: FinanceType.INCOME,
-    amount: 0,
+    type: undefined,
+    amount: undefined,
     startAt: new Date().toISOString()
   }
-  const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(newFinanceProp || defaultFinance)
+
+  const [newFinance, setNewFinance] = useState<FinanceForm>(newFinanceProp || defaultFinance)
 
   if (!financeModal.isOpen)
     return null
@@ -28,8 +35,22 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
     setSubmitting(true)
     setFeedback(null)
 
+    if (!newFinance.type || newFinance.amount === undefined) {
+      setFeedback('Please select a type and enter an amount.')
+      setSubmitting(false)
+      return
+    }
+
+    const financeToSubmit: Prisma.FinanceCreateInput = {
+      title: newFinance.title,
+      description: newFinance.description || null, 
+      type: newFinance.type,
+      amount: newFinance.amount,
+      startAt: new Date(newFinance.startAt).toISOString(),
+    }
+
     try {
-      await createFinance(newFinance)
+      await createFinance(financeToSubmit)
       setNewFinance({ ...defaultFinance })
       handleRefresh()
       financeModal.onClose()
@@ -40,11 +61,13 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
     }
   }
 
+  const closeModal = () => {
+    setNewFinance({ ...defaultFinance })
+    financeModal.onClose()
+  }
+
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-      onClick={financeModal.onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
       <div
         className="w-full max-w-md rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-2xl shadow-black/50"
         onClick={(event) => event.stopPropagation()}
@@ -53,7 +76,7 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
           <h2 className="text-xl font-semibold text-foreground">Add finance</h2>
           <button
             type="button"
-            onClick={financeModal.onClose}
+            onClick={closeModal}
             className="text-2xl text-(--muted) transition hover:text-foreground"
             aria-label="Close"
           >
@@ -76,7 +99,7 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
           <label className="block text-sm font-medium text-(--muted)">
             Description
             <textarea
-              value={newFinance.description ? newFinance.description : ''}
+              value={newFinance.description ?? ''}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, description: event.target.value })}}
               className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong)"
               rows={3}
@@ -87,10 +110,12 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
           <label className="block text-sm font-medium text-(--muted)">
             Type
             <select
-              value={newFinance.type ? newFinance.type : FinanceType.INCOME}
+              value={newFinance.type ?? undefined}
+              required
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, type: event.target.value as FinanceType })}}
               className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground"
             >
+              <option value={undefined}></option>
               <option value={FinanceType.INCOME}>Income</option>
               <option value={FinanceType.OUTCOME}>Outcome</option>
             </select>
@@ -100,12 +125,11 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
             Amount
             <input
               type="number"
-              step="0.01"
-              value={newFinance.amount}
+              inputMode="decimal"
+              value={newFinance.amount ?? undefined}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, amount: parseFloat(event.target.value) || 0 })}}
               required
-              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong)"
-              placeholder="0.00"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong) [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </label>
 
@@ -123,13 +147,6 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
           {feedback ? <p className="text-sm text-(--accent-glow)">{feedback}</p> : null}
 
           <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={financeModal.onClose}
-              className="rounded border border-(--border) px-4 py-2 text-sm font-medium text-(--muted) transition hover:bg-(--surface-elevated)"
-            >
-              Cancel
-            </button>
             <button
               type="submit"
               disabled={submitting}
