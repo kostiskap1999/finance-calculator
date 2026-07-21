@@ -42,19 +42,19 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
       onClick={financeModal.onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-2xl shadow-black/50"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">Add finance</h2>
+          <h2 className="text-xl font-semibold text-foreground">Add finance</h2>
           <button
             type="button"
             onClick={financeModal.onClose}
-            className="text-2xl text-gray-500 hover:text-gray-700"
+            className="text-2xl text-(--muted) transition hover:text-foreground"
             aria-label="Close"
           >
             ×
@@ -62,41 +62,41 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
         </div>
 
         <form className="space-y-3" onSubmit={handleSubmit}>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-(--muted)">
             Title
             <input
               value={newFinance.title}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, title: event.target.value })}}
               required
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong)"
               placeholder="Salary"
             />
           </label>
 
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-(--muted)">
             Description
             <textarea
               value={newFinance.description ? newFinance.description : ''}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, description: event.target.value })}}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong)"
               rows={3}
               placeholder="Optional details"
             />
           </label>
 
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-(--muted)">
             Type
             <select
               value={newFinance.type ? newFinance.type : FinanceType.INCOME}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, type: event.target.value as FinanceType })}}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground"
             >
               <option value={FinanceType.INCOME}>Income</option>
               <option value={FinanceType.OUTCOME}>Outcome</option>
             </select>
           </label>
 
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-(--muted)">
             Amount
             <input
               type="number"
@@ -104,36 +104,36 @@ export default function NewFinance({financeModal, handleRefresh, newFinanceProp 
               value={newFinance.amount}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, amount: parseFloat(event.target.value) || 0 })}}
               required
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground placeholder:text-(--muted-strong)"
               placeholder="0.00"
             />
           </label>
 
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-(--muted)">
             Start date
             <input
               type="date"
               value={newFinance.startAt ? new Date(newFinance.startAt).toISOString().slice(0, 10) : ''}
               onChange={(event) => {newFinance && setNewFinance({ ...newFinance, startAt: new Date(event.target.value).toISOString() })}}
               required
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded border border-(--border) bg-(--surface-elevated) px-3 py-2 text-foreground"
             />
           </label>
 
-          {feedback ? <p className="text-sm text-red-600">{feedback}</p> : null}
+          {feedback ? <p className="text-sm text-(--accent-glow)">{feedback}</p> : null}
 
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={financeModal.onClose}
-              className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700"
+              className="rounded border border-(--border) px-4 py-2 text-sm font-medium text-(--muted) transition hover:bg-(--surface-elevated)"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded bg-(--accent) px-4 py-2 text-sm font-medium text-white transition hover:bg-(--accent-strong) disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting ? 'Saving...' : 'Save finance'}
             </button>

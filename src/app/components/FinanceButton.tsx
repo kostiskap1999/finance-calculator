@@ -11,18 +11,17 @@ interface FinanceButtonProps {
   onFinanceChange: () => void
 }
 
-export default function FinanceButton({ financeModal, finance, onFinanceChange }: FinanceButtonProps & {financeModal: NewFinanceProps}) {
+export default function FinanceButton({ financeModal, finance, onFinanceChange }: FinanceButtonProps & { financeModal: NewFinanceProps }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
-
- const defaultFinance: Prisma.FinanceCreateInput = {
+  const defaultFinance: Prisma.FinanceCreateInput = {
     title: '',
     description: '',
     type: FinanceType.INCOME,
     amount: 0,
-    startAt: new Date().toISOString()
+    startAt: new Date().toISOString(),
   }
   const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(defaultFinance)
 
@@ -80,12 +79,12 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
 
   return (
     <>
-      <div className="rounded-lg bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-(--border) bg-(--surface-elevated) p-4 shadow-sm">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="font-medium text-gray-800">{finance.title}</div>
-            <div className="text-sm text-gray-600">{finance.description || 'No description'}</div>
-            <div className="mt-1 text-sm text-gray-600">
+            <div className="font-medium text-foreground">{finance.title}</div>
+            <div className="text-sm text-(--muted)">{finance.description || 'No description'}</div>
+            <div className="mt-1 text-sm text-(--muted)">
               Amount: {Number(finance.amount).toFixed(2)}
             </div>
           </div>
@@ -94,7 +93,7 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
             <button
               type="button"
               onClick={openEditor}
-              className="rounded bg-blue-600 px-2 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+              className="rounded bg-(--accent) px-2 py-1 text-xs font-semibold text-white transition hover:bg-(--accent-strong)"
             >
               Edit
             </button>
@@ -102,18 +101,17 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
               type="button"
               onClick={handleDelete}
               disabled={isSubmitting}
-              className="rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded bg-(--accent-strong) px-2 py-1 text-xs font-semibold text-white transition hover:bg-(--accent-glow) disabled:cursor-not-allowed disabled:opacity-70"
             >
               Delete
             </button>
           </div>
         </div>
 
-        {feedback ? <p className="mt-2 text-sm text-red-600">{feedback}</p> : null}
+        {feedback ? <p className="mt-2 text-sm text-(--accent-glow)">{feedback}</p> : null}
       </div>
 
-      {isEditing ? (<NewFinance financeModal={financeModal} handleRefresh={onFinanceChange} newFinanceProp={newFinance}  />
-      ) : null}
+      {isEditing ? <NewFinance financeModal={financeModal} handleRefresh={onFinanceChange} newFinanceProp={newFinance} /> : null}
     </>
   )
 }

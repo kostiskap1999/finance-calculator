@@ -10,21 +10,23 @@ interface PageWrapperProps {
 }
 
 export default function PageWrapper({ loading, error, children, className = '' }: PageWrapperProps) {
+  const baseClass = `min-h-screen bg-[var(--background)] text-[var(--foreground)] ${className}`.trim()
+
   if (loading) {
     return (
-      <div className={className || 'flex items-center justify-center min-h-screen'}>
-        <div>Loading...</div>
+      <div className={`${baseClass} flex items-center justify-center`}>
+        <div className="text-[var(--muted)]">Loading...</div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className={className || 'flex items-center justify-center min-h-screen'}>
-        <div className="text-red-500">{error}</div>
+      <div className={`${baseClass} flex items-center justify-center`}>
+        <div className="text-[var(--accent-glow)]">{error}</div>
       </div>
     )
   }
 
-  return <div className={className}> {children} </div>
+  return <div className={baseClass}>{children}</div>
 }
