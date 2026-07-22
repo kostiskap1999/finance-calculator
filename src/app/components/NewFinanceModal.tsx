@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { FinanceType, Prisma } from '@prisma/client'
 import { createFinance } from '@/lib/api/finance'
 import { NewFinanceProps } from '../page';
@@ -25,7 +25,15 @@ export default function NewFinanceModal({financeModal, handleRefresh, newFinance
     startAt: new Date().toISOString()
   }
 
-  const [newFinance, setNewFinance] = useState<FinanceForm>(newFinanceProp || defaultFinance)
+  const [newFinance, setNewFinance] = useState<FinanceForm>(defaultFinance)
+  
+  useEffect(() => {
+    if (newFinanceProp)
+      setNewFinance(newFinanceProp);
+    else
+      setNewFinance(defaultFinance);
+  }, [newFinanceProp])
+
 
   if (!financeModal.isOpen)
     return null

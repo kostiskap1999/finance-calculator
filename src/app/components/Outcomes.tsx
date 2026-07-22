@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { getFinancesByType } from '@/lib/api/finance'
-import { FinanceType } from '@prisma/client'
+import { FinanceType, Prisma } from '@prisma/client'
 import FinanceButton from './FinanceButton'
 import { NewFinanceProps } from '../page'
 
-export default function Outcomes({ financeModal, refresh, onRefresh }: { financeModal: NewFinanceProps; refresh: number; onRefresh: () => void }) {
+export default function Outcomes({ handleNewFinanceOpen, handleEditedFinance, refresh, handleRefresh }: { financeModal: NewFinanceProps; handleNewFinanceOpen: any; handleEditedFinance: (finance: Prisma.FinanceCreateInput) => void; refresh: number; handleRefresh: () => void }) {
   const [incomes, setIncomes] = useState<any[]>([])
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function Outcomes({ financeModal, refresh, onRefresh }: { finance
         <div className="space-y-3">
           {incomes.map((income) => (
             <div key={income.id}>
-              <FinanceButton financeModal={financeModal} finance={income} onFinanceChange={onRefresh} />
+              <FinanceButton handleNewFinanceOpen={handleNewFinanceOpen} handleEditedFinance={handleEditedFinance} finance={income} handleRefresh={handleRefresh} />
             </div>
           ))}
         </div>

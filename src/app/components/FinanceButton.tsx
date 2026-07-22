@@ -8,10 +8,12 @@ import { NewFinanceProps } from '../page'
 
 interface FinanceButtonProps {
   finance: any
-  onFinanceChange: () => void
+  handleNewFinanceOpen: any
+  handleEditedFinance: (finance: Prisma.FinanceCreateInput) => void
+  handleRefresh: () => void
 }
 
-export default function FinanceButton({ financeModal, finance, onFinanceChange }: FinanceButtonProps & { financeModal: NewFinanceProps }) {
+export default function FinanceButton({ handleNewFinanceOpen, finance, handleEditedFinance, handleRefresh }: FinanceButtonProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -35,7 +37,9 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
       amount: Number(finance.amount) || 0,
       startAt: finance.startAt ? new Date(finance.startAt).toISOString().slice(0, 10) : '',
     })
+    handleEditedFinance(finance)
     setIsEditing(true)
+    handleNewFinanceOpen()
   }
 
   const handleSubmit = async (event: FormEvent) => {
@@ -44,15 +48,7 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
     setFeedback(null)
 
     try {
-      await updateFinance(finance.id, {
-        title: newFinance.title,
-        description: newFinance.description || null,
-        type: newFinance.type,
-        amount: Number(newFinance.amount),
-        startAt: new Date(newFinance.startAt).toISOString(),
-      })
-
-      onFinanceChange?.()
+      handleRefresh?.()
       setIsEditing(false)
     } catch {
       setFeedback('Unable to update this finance right now.')
@@ -73,7 +69,7 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
 
     try {
       await deleteFinance(finance.id)
-      onFinanceChange?.()
+      handleRefresh?.()
     } catch {
       setFeedback('Unable to delete this finance right now.')
     } finally {
@@ -131,8 +127,6 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
 
         {feedback ? <p className="mt-2 text-sm text-(--accent-glow)">{feedback}</p> : null}
       </div>
-
-      {isEditing ? <NewFinanceModal financeModal={financeModal} handleRefresh={onFinanceChange} newFinanceProp={newFinance} /> : null}
     </>
   )
 }
