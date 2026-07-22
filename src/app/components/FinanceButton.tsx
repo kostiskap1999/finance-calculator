@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { deleteFinance, updateFinance } from '@/lib/api/finance'
 import { FinanceType, Prisma } from '@prisma/client'
-import NewFinance from './NewFinance'
+import NewFinanceModal from './NewFinanceModal'
 import { NewFinanceProps } from '../page'
 
 interface FinanceButtonProps {
@@ -132,7 +132,7 @@ export default function FinanceButton({ financeModal, finance, onFinanceChange }
         {feedback ? <p className="mt-2 text-sm text-(--accent-glow)">{feedback}</p> : null}
       </div>
 
-      {isEditing ? <NewFinance financeModal={financeModal} handleRefresh={onFinanceChange} newFinanceProp={newFinance} /> : null}
+      {isEditing ? <NewFinanceModal financeModal={financeModal} handleRefresh={onFinanceChange} newFinanceProp={newFinance} /> : null}
     </>
   )
 }

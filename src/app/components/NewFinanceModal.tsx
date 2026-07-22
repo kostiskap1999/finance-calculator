@@ -12,7 +12,7 @@ type FinanceForm = Omit<Prisma.FinanceCreateInput, "type" | "amount"> & {
 
 
 
-export default function NewFinance({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: FinanceForm }) {
+export default function NewFinanceModal({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: FinanceForm }) {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 

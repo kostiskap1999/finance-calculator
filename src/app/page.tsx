@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import PageWrapper from './components/PageWrapper'
 import Incomes from './components/Incomes'
 import Outcomes from './components/Outcomes'
-import NewFinance from './components/NewFinance'
+import NewFinanceModal from './components/NewFinanceModal'
 import TotalFinances from './components/TotalFinances'
 
 export interface NewFinanceProps {
@@ -62,7 +62,7 @@ export default function Home() {
         </div>
       </div>
 
-      <NewFinance financeModal={financeModal} handleRefresh={handleRefresh} />
+      <NewFinanceModal financeModal={financeModal} handleRefresh={handleRefresh} />
     </PageWrapper>
   )
 }
