@@ -14,53 +14,16 @@ interface FinanceButtonProps {
 }
 
 export default function FinanceButton({ handleNewFinanceOpen, finance, handleEditedFinance, handleRefresh }: FinanceButtonProps) {
-  const [isEditing, setIsEditing] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
 
-  const defaultFinance: Prisma.FinanceCreateInput = {
-    title: '',
-    description: '',
-    type: FinanceType.INCOME,
-    amount: 0,
-    startAt: new Date().toISOString(),
-  }
-  const [newFinance, setNewFinance] = useState<Prisma.FinanceCreateInput>(defaultFinance)
 
   const openEditor = () => {
     setFeedback(null)
-    setNewFinance({
-      title: finance.title ?? '',
-      description: finance.description ?? '',
-      type: finance.type ?? FinanceType.INCOME,
-      amount: Number(finance.amount) || 0,
-      startAt: finance.startAt ? new Date(finance.startAt).toISOString().slice(0, 10) : '',
-    })
     handleEditedFinance(finance)
-    setIsEditing(true)
     handleNewFinanceOpen()
   }
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setIsSubmitting(true)
-    setFeedback(null)
-
-    try {
-      handleRefresh?.()
-      setIsEditing(false)
-    } catch {
-      setFeedback('Unable to update this finance right now.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    setConfirmDelete(true)
-  }
-
 
   const handleConfirmDelete = async () => {
 
@@ -96,7 +59,7 @@ export default function FinanceButton({ handleNewFinanceOpen, finance, handleEdi
           {!confirmDelete &&
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={() => setConfirmDelete(true)}
               disabled={isSubmitting}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-strong) text-sm font-semibold text-white transition hover:bg-(--accent-glow) disabled:cursor-not-allowed disabled:opacity-70"
               aria-label="Delete finance"

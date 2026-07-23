@@ -15,7 +15,6 @@ type FinanceForm = Omit<Prisma.FinanceCreateInput, "type" | "amount"> & {
 export default function NewFinanceModal({financeModal, handleRefresh, newFinanceProp }: { financeModal: NewFinanceProps; handleRefresh: () => void; newFinanceProp?: FinanceForm }) {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
-
   
   const defaultFinance: FinanceForm = {
     title: '',
@@ -32,8 +31,7 @@ export default function NewFinanceModal({financeModal, handleRefresh, newFinance
       setNewFinance(newFinanceProp);
     else
       setNewFinance(defaultFinance);
-  }, [newFinanceProp])
-
+  })
 
   if (!financeModal.isOpen)
     return null
