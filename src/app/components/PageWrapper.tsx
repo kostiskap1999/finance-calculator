@@ -15,7 +15,7 @@ export default function PageWrapper({ loading, error, children, className = '' }
   if (loading) {
     return (
       <div className={`${baseClass} flex items-center justify-center`}>
-        <div className="text-[var(--muted)]">Loading...</div>
+        <div className="text-(--muted)">Loading...</div>
       </div>
     )
   }
@@ -23,7 +23,7 @@ export default function PageWrapper({ loading, error, children, className = '' }
   if (error) {
     return (
       <div className={`${baseClass} flex items-center justify-center`}>
-        <div className="text-[var(--accent-glow)]">{error}</div>
+        <div className="text-(--accent-glow)">{error}</div>
       </div>
     )
   }
