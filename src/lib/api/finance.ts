@@ -1,5 +1,5 @@
 import { FinanceType, Prisma } from '@prisma/client'
-import { prisma } from '../prisma';
+import { FinanceForm } from '@/types/finance';
 
 export async function getFinancesByType(type: FinanceType) {
   const query = `?type=${type}`
@@ -29,7 +29,7 @@ export async function getTotalFinances() {
 
 
 
-export async function createFinance(finance: Prisma.FinanceCreateInput): Promise<Prisma.FinanceGetPayload<{ include: { recurrence: true } }>> {
+export async function createFinance(finance: FinanceForm): Promise<Prisma.FinanceGetPayload<{ include: { recurrence: true } }>> {
   const response = await fetch('/api/finance', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},

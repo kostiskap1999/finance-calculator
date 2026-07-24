@@ -1,15 +1,13 @@
 "use client"
 
-import { useState, type FormEvent } from 'react'
-import { deleteFinance, updateFinance } from '@/lib/api/finance'
-import { FinanceType, Prisma } from '@prisma/client'
-import NewFinanceModal from './NewFinanceModal'
-import { NewFinanceProps } from '../page'
+import { useState } from 'react'
+import { deleteFinance } from '@/lib/api/finance'
+import { FinanceForm } from '@/types/finance'
 
 interface FinanceButtonProps {
   finance: any
   handleNewFinanceOpen: any
-  handleEditedFinance: (finance: Prisma.FinanceCreateInput) => void
+  handleEditedFinance: (finance: FinanceForm) => void
   handleRefresh: () => void
 }
 

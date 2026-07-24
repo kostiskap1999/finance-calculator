@@ -1,14 +1,11 @@
 "use client"
 
 import { useEffect, useState, type FormEvent } from 'react'
-import { FinanceType, Prisma } from '@prisma/client'
-import { createFinance } from '@/lib/api/finance'
+import { FinanceType } from '@prisma/client'
+import { createFinance, updateFinance } from '@/lib/api/finance'
 import { NewFinanceProps } from '../page';
+import { FinanceForm } from '@/types/finance';
 
-type FinanceForm = Omit<Prisma.FinanceCreateInput, "type" | "amount"> & {
-  type: FinanceType | undefined;
-  amount: number | undefined;
-};
 
 
 
@@ -28,9 +25,9 @@ export default function NewFinanceModal({financeModal, handleRefresh, newFinance
   
   useEffect(() => {
     if (newFinanceProp)
-      setNewFinance(newFinanceProp);
+      setNewFinance(newFinanceProp)
     else
-      setNewFinance(defaultFinance);
+      setNewFinance(defaultFinance)
   })
 
   if (!financeModal.isOpen)
@@ -47,7 +44,8 @@ export default function NewFinanceModal({financeModal, handleRefresh, newFinance
       return
     }
 
-    const financeToSubmit: Prisma.FinanceCreateInput = {
+    const financeToSubmit = {
+      id: newFinanceProp?.id,
       title: newFinance.title,
       description: newFinance.description || null, 
       type: newFinance.type,
@@ -56,7 +54,11 @@ export default function NewFinanceModal({financeModal, handleRefresh, newFinance
     }
 
     try {
-      await createFinance(financeToSubmit)
+      if(newFinanceProp && newFinanceProp.id) {
+        await updateFinance(newFinanceProp.id, financeToSubmit)
+      } else {
+        await createFinance(financeToSubmit)
+      }
       setNewFinance({ ...defaultFinance })
       handleRefresh()
       financeModal.onClose()

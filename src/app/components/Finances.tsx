@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { getFinancesByType } from '@/lib/api/finance'
-import { FinanceType, Prisma } from '@prisma/client'
+import { FinanceType } from '@prisma/client'
 import FinanceButton from './FinanceButton'
 import { NewFinanceProps } from '../page'
+import { FinanceForm } from '@/types/finance'
 
-export default function Finances({ financeType, handleNewFinanceOpen, handleEditedFinance, refresh, handleRefresh }: { financeType: FinanceType; financeModal: NewFinanceProps; handleNewFinanceOpen: any; handleEditedFinance: (finance: Prisma.FinanceCreateInput) => void; refresh: number; handleRefresh: () => void }) {
+export default function Finances({ financeType, handleNewFinanceOpen, handleEditedFinance, refresh, handleRefresh }: { financeType: FinanceType; financeModal: NewFinanceProps; handleNewFinanceOpen: any; handleEditedFinance: (finance: FinanceForm) => void; refresh: number; handleRefresh: () => void }) {
   const [finances, setFinances] = useState<any[]>([])
 
   useEffect(() => {
@@ -24,11 +25,11 @@ export default function Finances({ financeType, handleNewFinanceOpen, handleEdit
   }, [refresh])
 
   return (
-    <div className="h-full w-full overflow-auto rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]">
-      <h2 className="mb-4 text-xl font-semibold text-[var(--foreground)]">{financeType === FinanceType.INCOME ? 'Incomes' : 'Outcomes'}</h2>
+    <div className="h-full w-full overflow-auto rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]">
+      <h2 className="mb-4 text-xl font-semibold text-foreground">{financeType === FinanceType.INCOME ? 'Incomes' : 'Outcomes'}</h2>
 
       {finances.length === 0 ? (
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-4 text-sm text-[var(--muted)]">
+        <div className="rounded-lg border border-(--border) bg-(--surface-elevated) p-4 text-sm text-(--muted)">
           No {financeType && financeType.toLowerCase()}s yet.
         </div>
       ) : (

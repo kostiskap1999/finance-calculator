@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import PageWrapper from './components/PageWrapper'
 import NewFinanceModal from './components/NewFinanceModal'
 import TotalFinances from './components/TotalFinances'
-import { FinanceType, Prisma } from '@prisma/client'
+import { FinanceType } from '@prisma/client'
 import Finances from './components/Finances'
+import { FinanceForm } from '@/types/finance'
 
 export interface NewFinanceProps {
   isOpen: boolean
@@ -18,7 +19,7 @@ export default function Home() {
   const [isNewFinanceOpen, setIsNewFinanceOpen] = useState(false)
   const [refresh, setRefresh] = useState(0)
 
-  const [editedFinance, setEditedFinance] = useState<Prisma.FinanceCreateInput | undefined>(undefined)
+  const [editedFinance, setEditedFinance] = useState<FinanceForm | undefined>(undefined)
 
   const financeModal = {
     isOpen: isNewFinanceOpen,
@@ -46,7 +47,7 @@ export default function Home() {
     setIsNewFinanceOpen(!isNewFinanceOpen)
   }
 
-  const handleEditedFinance = (finance: Prisma.FinanceCreateInput) => {
+  const handleEditedFinance = (finance: FinanceForm) => {
     setEditedFinance(finance)
   }
 
