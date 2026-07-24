@@ -84,6 +84,14 @@ export default function FinanceButton({ handleNewFinanceOpen, finance, handleEdi
           <div className="mt-1 text-sm text-(--muted)">
             Amount: {Number(finance.amount).toFixed(2)}
           </div>
+          {finance.recurring && finance.recurrence ? (
+            <div className="mt-1 text-sm text-(--accent)">
+              Recurs {finance.recurrence.interval}x every {finance.recurrence.frequency.toLowerCase()}
+              {finance.recurrence.endsAt ? ` until ${new Date(finance.recurrence.endsAt).toISOString().slice(0, 10)}` : ''}
+            </div>
+          ) : finance.recurring ? (
+            <div className="mt-1 text-sm text-(--accent)">Recurring</div>
+          ) : null}
         </div>
 
         {feedback ? <p className="mt-2 text-sm text-(--accent-glow)">{feedback}</p> : null}
